@@ -21,7 +21,6 @@ Pruebas: Cree archivos con varios ejemplos para pruebas. Cree una clase donde pr
 '''
 import sys
 import re
-import pdb; pdb.set_trace()
 
 class AFPD:
 
@@ -40,7 +39,6 @@ class AFPD:
 		for line in lines:
 			line = line.rstrip("\n")
 			if(line.startswith("#")):
-				print("Leyendo ", line);
 				currentReading = line
 			if (line!="" and line != currentReading):
 				afdAtr = currentReading.lstrip("#")
@@ -90,22 +88,24 @@ class AFPD:
 		else:
 			return False
 
+if(len(sys.argv)>2):
+	print("Recuerde, python afpd.py nombredeArchivo.afpd")
+else:
+	afpd = AFPD(sys.argv[1])
+	transitions = afpd.transitions
 
-afpd = AFPD(sys.argv[1])
-transitions = afpd.transitions
+	def getTransitionsArr(afpd):
+		TransitionList = {}
+		for line in afpd.transitions:
+			#Separa las transiciones en
+			#estado origen, simbolo, simbolo reemplazado, estado final, simbolo que reemplaza
+			chars = re.split(':|>', line)
+			TransitionList[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
 
-def getTransitionsArr(afpd):
-	TransitionList = {}
-	for line in afpd.transitions:
-		#Separa las transiciones en
-		#estado origen, simbolo, simbolo reemplazado, estado final, simbolo que reemplaza
-		chars = re.split(':|>', line)
-		TransitionList[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
+		return TransitionList
 
-	return TransitionList
+	listT = getTransitionsArr(afpd)
 
-listT = getTransitionsArr(afpd)
-
-while(True):
-	cadena = input("Ingresa una cadena\n")
-	print(afpd.processString(cadena))
+	while(True):
+		cadena = input("Ingresa una cadena\n")
+		print(afpd.processString(cadena))
