@@ -3,6 +3,7 @@
 python afd.py archivo.dfa
 
 python afpd.py archivo.afpd
+etc
 ```
 
 El automata en dfaFile es (ab U b)* 
