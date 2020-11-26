@@ -116,7 +116,8 @@ class MT():
 			tape[nextIndex] = transition[0]
 			currentIndex = nextIndex
 			currentState = tape[currentIndex]
-			
+		## Ultimo estado, debe llevarse a otras funciones.
+		print(''.join(tape), "->", end='')	
 		print("Aceptada")
 		return True
 
