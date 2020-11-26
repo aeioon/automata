@@ -7,3 +7,6 @@ python afpd.py archivo.afpd
 
 El automata en dfaFile es (ab U b)* 
 El automata en afpdFile es a^{n} b^{n}
+
+El automata en turing1 son los palindromos con a y b
+el automata en turing2 son las cadenas con mismo numero de aes y bes
