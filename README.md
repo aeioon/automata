@@ -2,7 +2,7 @@
 ```
 python afd.py archivo.dfa
 
-python afpd.py archivo.afpd
+python afpd.py archivo.dpda
 etc
 ```
 
