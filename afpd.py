@@ -1,111 +1,121 @@
-'''Atributos:
-Conjunto de Estados: Q
-Estado Inicial: q0
-Conjunto de Estados de Aceptación: F
-Alfabeto de Cinta: Sigma
-Alfabeto de Pila: Gamma
-Función de Transición: Delta
-Métodos:
-Constructor(estados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila,Delta)  de la clase para inicializar los atributos . Recuerde que en los autómatas creados, todos los estados deben ser accesibles.
-Constructor(nombreArchivo): de la clase para inicializar los atributos a partir de un archivo cuya extensión es .dpda y cuyo formato está especificado en el archivo adjunto AFPD.pdf. Recuerde que, en los autómatas creados, todos los estados deben ser accesibles.
-modificarPIla(pila,operación,parametro): Para ejecutar los cambios en la pila realizados por las transiciones, incluyendo los básicos así como la inserción/reemplazamiento de cadenas en el tope de la pila vistos en clase.
-Booleano procesarCadena(cadena): procesa la cadena y retorna verdadero si es aceptada y falso si es rechazada por el autómata.
-Booleano procesarCadenaConDetalles(cadena): realiza lo mismo que el método anterior aparte imprime los detalles del procesamiento con el formato que se indica en el archivo AFPD.pdf.
-procesarListaCadenas(listaCadenas,nombreArchivo, imprimirPantalla): procesa cada cadenas con detalles pero los resultados deben ser impresos en un archivo cuyo nombre es nombreArchivo; si este es inválido se asigna un nombre por defecto.  Además, todo esto debe ser impreso en pantalla de acuerdo al valor del Booleano imprimirPantalla. Los campos deben estar separados por tabulación y son: 
-cadena, 
-procesamiento (con el formato del archivo AFPD.pdf).
-‘yes’ o ‘no’ dependiendo de si la cadena es aceptada o no.
-hallarProductoCartesianoConAFD(afd): debe calcular y retornar el producto cartesiano con un AFD dado como parámetro.
-toString(): Representar el AFPD con el formato de los archivos de entrada de AFPD (AFPD.pdf) de manera que se pueda imprimir fácilmente.
-Pruebas: Cree archivos con varios ejemplos para pruebas. Cree una clase donde pruebe e ilustre toda la funcionalidad de este módulo.
-'''
-import sys
 import re
+import sys
 
 class AFPD:
 
-	def __init__(self, file):
-		self.states=set({})
-		self.initial=""
-		self.accepting=set({})
-		self.tapeAlphabet=set({})
-		self.stackAlphabet=set({})
-		self.transitions=set({})
-		self.stack = []
+	def __init__(self, states=set({}), initial="", accepting=set({}), tapeAlphabet=set({}), stackAlphabet=set({}), transitions=set({}), file=None):
+		self.states=states
+		self.initial= initial
+		self.accepting=accepting
+		self.tapeAlphabet=tapeAlphabet
+		self.stackAlphabet=stackAlphabet
+		self.transitions=transitions
+		self.stack=[]
 
-		lines = open(file).readlines()
-		
-		currentReading = ""
-		for line in lines:
-			line = line.rstrip("\n")
-			if(line.startswith("#")):
-				currentReading = line
-			if (line!="" and line != currentReading):
-				afdAtr = currentReading.lstrip("#")
-				if(currentReading!="#initial"):
-					getattr(self, afdAtr).add(line)
-				else:
-					self.initial = line
+		if(file!= None):
 
-	def processString(self, string):
-		print("Se procesa la cadena ", string)
-		currentString = string
-		currentState = self.initial
-		for char in string:
-			print(currentState, char, len(self.stack))
-			transition = listT[(currentState, char)]
-			print
-			# Luego la veriicacion de temas de la pila
-			# varias partes de aca pasan a modifyStack
+			lines = open(file).readlines()
+			
+			currentReading = ""
+			for line in lines:
+				line = line.rstrip("\n")
+				if(line.startswith("#")):
+					currentReading = line
+				if (line!="" and line != currentReading):
+					afpdAtr = currentReading.lstrip("#")
+					if(currentReading!="#initial"):
+						getattr(self, afpdAtr).add(line)
+					else:
+						self.initial = line
 
-			#Caso 1: Delta(q, a, lambda) = (q, b)
-			#Se añade b sin importar el tope
-			if(transition[0]=='$' and transition[2]!='$'):
-				self.stack.append(transition[2])
-				currentState = transition[1]
-			#Caso 2: Delta(q0, a, A) = (q1, B)
-			#Se reemplaza A por B, el stack debe no estar vacio
-			elif(len(self.stack) != 0 and transition[0]==self.stack[-1] and transition[2]!='$'):
-				self.stack.pop()
-				self.stack.append(transition[2])
-				currentState = transition[1]	
-			#Caso 3: Delta(q, a , A) = (q', lambda)
-			#Se borra a del tope
-			elif(transition[2]=='$'):
-				if(len(self.stack)!=0):
-					self.stack.pop()
-				else:
-					return False # no hay tope
-				currentState = transition[1]
-			#Caso 4: No se altera la pila
-			elif(transition[0] == transition[2] == '$'):
-				currentState = transition[1]
-			#Caso 5: Transicion lambda como en anb2n
+	@classmethod
+	def from_file_name(cls, file):
+		return cls(file=file)
 
-
-		if((currentState in self.accepting) and len(self.stack) == 0):
-			return True
-		else:
-			return False
-
-if(len(sys.argv)>2):
-	print("Recuerde, python afpd.py nombredeArchivo.afpd")
-else:
-	afpd = AFPD(sys.argv[1])
-	transitions = afpd.transitions
-
-	def getTransitionsArr(afpd):
-		TransitionList = {}
-		for line in afpd.transitions:
+	def get_transition_set(self):
+		transition_list = {}
+		for line in self.transitions:
 			#Separa las transiciones en
 			#estado origen, simbolo, simbolo reemplazado, estado final, simbolo que reemplaza
 			chars = re.split(':|>', line)
-			TransitionList[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
+			transition_list[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
 
-		return TransitionList
+		return transition_list
 
-	listT = getTransitionsArr(afpd)
+	def process_string(self, string, details=False):
 
+		print("Se procesa la cadena: ", string)
+		current_string = "$" + string
+		current_state = self.initial
+		transition_list = self.get_transition_set()
+		while(current_string[0] != None):
+			char = current_string[0]
+			pair = (current_state, char)
+			transition = transition_list.get(pair)
+
+			#No imprime las descripciones instantaneas cuando la transicion no existe. Si la transicion existe pero comienza con lambda se quita el lambda
+			if transition != None:
+				print("({}, {})->".format(current_state, current_string.lstrip("$")), end='')
+			#Si no existe la transicion entonces  la cambiamos. Si se da el caso en el que la longitud sea 1 con $ pero ni el stack este vacio ni el estado sea de acpetacion se devuelve falso
+			if transition == None:
+				
+				if(current_string[0] == "$" and len(current_string)==1 and len(self.stack) == 0 and current_state in self.accepting):
+					return True
+				elif(current_string[0] == "$" and len(current_string)==1 and (len(self.stack) != 0 or current_state not in self.accepting)):
+					self.stack = []
+					return False
+				else:
+					current_string = current_string[1:]
+
+			else:
+				
+				#Caso 1: Delta(q, a, lambda) = (q, b)
+				#Se añade b sin importar el tope
+				if(transition[0]=='$' and transition[2]!='$'):
+					self.stack.append(transition[2])
+					current_state = transition[1]
+					current_string = current_string[1:]
+				#Caso 2: Delta(q0, a, A) = (q1, B)
+				#Se reemplaza A por B, el stack debe no estar vacio
+				elif(len(self.stack) != 0 and transition[0]==self.stack[-1] and transition[2]!='$'):
+					self.stack.pop()
+					self.stack.append(transition[2])
+					current_state = transition[1]
+					current_string = current_string[1:]	
+				#Caso 3: Delta(q, a , A) = (q', lambda)
+				#Se borra a del tope
+				elif(transition[2]=='$'):
+					if(len(self.stack)!=0):
+						self.stack.pop()
+					else:
+						self.stack = []
+						return False # no hay tope
+					current_state = transition[1]
+					current_string = current_string[1:]
+				#Caso 4: No se altera la pila
+				elif(transition[0] == transition[2] == '$'):
+					current_state = transition[1]
+					current_string = current_string[1:]
+				#Caso 5: Transicion lambda como en anb2n
+				current_string = '$' + current_string  
+		self.stack = []
+	
+
+
+	def process_string_with_details(self, string):
+		self.process_string(string, details=True)
+
+	def findCartesianProduct(afd):
+		return True
+		
+
+if(len(sys.argv)<2):
+	print("Error: Ingresa un archivo dfa de la siguiente forma")
+	print("python dfa.py archivo.dfa")
+else:
+	afpd = AFPD.from_file_name(file=sys.argv[1])
+	
 	while(True):
 		cadena = input("Ingresa una cadena\n")
-		print(afpd.processString(cadena))
+		print(afpd.process_string(cadena))
+

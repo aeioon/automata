@@ -55,6 +55,7 @@ class MT():
 		for char in string:
 			tape.append(char)
 		tape.append('!')
+
 		print("Cadena ingresada: ", string)
 		while(tape[current_index] != None and current_state not in self.accepting):	
 			if details: print(''.join(tape), "->", end='')

@@ -3,6 +3,7 @@ import sys
 
 class AFD:
 
+	#Constructor
 	def __init__(self, alphabet=set({}), states=set({}), initial="", accepting=set({}), transitions=set({}), file=None):
 		self.alphabet = alphabet
 		self.states = states
@@ -26,9 +27,12 @@ class AFD:
 					else:
 						self.initial = line
 
-	def from_file_name(self, file):
+	#Constructor de archivo
+	@classmethod
+	def from_file_name(cls, file):
 		return cls(file=file)
 
+	#Conjunto de transiciones
 	def get_transition_set(self):
 		transition_list = {}
 		for line in self.transitions:
