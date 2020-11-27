@@ -1,6 +1,7 @@
 import re
 import sys
 
+
 class AFD:
 
 	#Constructor
@@ -71,7 +72,7 @@ class AFD:
 	def process_string_with_details(self, string):
 		self.process_string(string, details=True)
 
-	def process_list_strings(self, string_list, filename, printScreen):
+	def process_list_strings(self, string_list, filename, printScreen=False):
 
 		with open("{}.txt".format(filename), "w") as writer:
 			sys.stdout = writer
@@ -82,15 +83,17 @@ class AFD:
 				sys.stdout = sys.__stdout__
 				for line in reader.readlines():
 					print(line)
-		
 
-if(len(sys.argv)<2):
-	print("Error: Ingresa un archivo dfa de la siguiente forma")
-	print("python dfa.py archivo.dfa")
-else:
-	afd = AFD(file=sys.argv[1])
-	
-	while(True):
-		cadena = input("Ingresa una cadena\n")
-		afd.process_string_with_details(cadena)
 
+
+if __name__ == "__main__":	
+	if(len(sys.argv)<2):
+		print("Error: Ingresa un archivo dfa de la siguiente forma")
+		print("python dfa.py archivo.dfa")
+	else:
+		afd = AFD()
+			
+		while(True):
+			cadena = input("Ingresa una cadena\n")
+			afd.process_string_with_details(cadena)
+	main()
