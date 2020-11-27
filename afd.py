@@ -70,7 +70,7 @@ class AFD:
 			return False
 
 	def process_string_with_details(self, string):
-		self.process_string(string, details=True)
+		return self.process_string(string, details=True)
 
 	def process_list_strings(self, string_list, filename, printScreen=False):
 
