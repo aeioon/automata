@@ -1,59 +1,42 @@
-'''Clase MT para representar Máquinas de Turing en su Modelo Estándar: 
-
-Atributos:
-Conjunto de Estados: Q
-Estado Inicial: q0
-Conjunto de Estados de Aceptación: F
-Alfabeto de Entrada: Sigma
-Alfabeto de Cinta: Gamma
-Función de Transición: delta
-Cinta
-Métodos:
-Constructor(estados, estadoInicial, estadosAceptacion, alfabetoEntrada, alfabetoCinta,Delta)  de la clase para inicializar los atributos. Recuerde que en la MT creada, todos los estados deben ser accesibles.
-Constructor(nombreArchivo): de la clase para inicializar los atributos a partir de un archivo cuya extensión es .tm y cuyo formato está especificado en el archivo adjunto MT.pdf. Recuerde que, en la MT creada, todos los estados deben ser accesibles.
-Booleano procesarCadena(cadena): procesa la cadena y retorna verdadero si es aceptada y falso si es rechazada por la MT.
-Booleano procesarCadenaConDetalles(cadena): realiza lo mismo que el método anterior aparte imprime los detalles del procesamiento con el formato que se indica en el archivo MT.pdf.
-String procesarFunción(cadena): procesa la cadena y retorna la cadena que queda escrita sobre la cinta al final (última configuración instantánea).
-procesarListaCadenas(listaCadenas,nombreArchivo, imprimirPantalla): procesa cada cadenas con detalles pero los resultados deben ser impresos en un archivo cuyo nombre es nombreArchivo; si este es inválido se asigna un nombre por defecto.  Además, todo esto debe ser impreso en pantalla de acuerdo al valor del Booleano imprimirPantalla. Los campos deben estar separados por tabulación y son: 
-cadena, 
-última configuración instantánea
-‘yes’ o ‘no’ dependiendo de si la cadena es aceptada o no.
-toString(): Representar la MT con el formato de los archivos de entrada de MT (MT.pdf) de manera que se pueda imprimir fácilmente.
-Pruebas: Cree archivos con varios ejemplos para pruebas. Cree una clase donde pruebe e ilustre toda la funcionalidad de este módulo.
-'''
 import sys
 import re
 class MT():
 
-	def __init__(self, file):
-		
-		self.states=set({})
-		self.initial=""
-		self.accepting=set({})
-		self.inputAlphabet=set({})
-		self.tapeAlphabet=set({})
-		self.transitions = set({})
+	def __init__(self, states=set({}), initial="", accepting=set({}), inputAlphabet=set({}), tapeAlphabet=set({}), transitions=set({}), file=None):
 
-		lines = open(file).readlines()
-		
-		currentReading = ""
-		for line in lines:
-			line = line.rstrip("\n")
-			if(line.startswith("#")):
-				currentReading = line
-			if (line!="" and line != currentReading):
-				afdAtr = currentReading.lstrip("#")
-				if(currentReading!="#initial"):
-					getattr(self, afdAtr).add(line)
-				else:
-					self.initial = line
+		self.states=states
+		self.initial= initial
+		self.accepting= accepting
+		self.inputAlphabet=inputAlphabet
+		self.tapeAlphabet=tapeAlphabet
+		self.transitions = transitions
 
-	def getTransitionSet(self):
-		transitionList = {}
+		if(file!=None):
+			lines = open(file).readlines()
+			
+			current_reading = ""
+			for line in lines:
+				line = line.rstrip("\n")
+				if(line.startswith("#")):
+					current_reading = line
+				if (line!="" and line != current_reading):
+					tmAtr = current_reading.lstrip("#")
+					if(current_reading!="#initial"):
+						getattr(self, tmAtr).add(line)
+					else:
+						self.initial = line
+
+	@classmethod
+	def from_file_name(cls, file):
+		return cls(file=file)
+		
+
+	def get_transition_set(self):
+		transition_list = {}
 		for line in self.transitions:
 			chars = re.split(':|\\?', line)
-			transitionList[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
-		return transitionList
+			transition_list[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
+		return transition_list
 
 	def displace(self, transition):
 		if transition[2] == '<':
@@ -63,107 +46,82 @@ class MT():
 		else:
 			return 0
 
-	def processString(self, string):
-		transitions = self.getTransitionSet()
+	def process_string(self, string, details=False):
+		transitions = self.get_transition_set()
 		tape = []
-		currentState = self.initial
-		tape.append(currentState)
-		currentIndex = 0
+		current_state = self.initial
+		tape.append(current_state)
+		current_index = 0
 		for char in string:
 			tape.append(char)
 		tape.append('!')
 		print("Cadena ingresada: ", string)
-		while(tape[currentIndex] != None and currentState not in self.accepting):	
-			Pair = (tape[currentIndex], tape[currentIndex+1])
-			if transitions.get(Pair) == None:
+		while(tape[current_index] != None and current_state not in self.accepting):	
+			if details: print(''.join(tape), "->", end='')
+			pair = (tape[current_index], tape[current_index+1])
+			if transitions.get(pair) == None:
 				#M se detiene en un estado que no es de aceptacion, 
 				#lambda(q, s) no está definida
-				print("La transicion Lambda", Pair," no existe")
+				print("La transicion Lambda", pair," no existe")
 				return False
-			transition = transitions.get(Pair)
-			nextIndex = currentIndex+self.displace(transition)
-			tape[currentIndex+1]= transition[1]
-			tape[currentIndex] = tape[nextIndex]
-			tape[nextIndex] = transition[0]
-			currentIndex = nextIndex
-			currentState = tape[currentIndex]
-			
+			transition = transitions.get(pair)
+			next_index = current_index+self.displace(transition)
+			tape[current_index+1]= transition[1]
+			tape[current_index] = tape[next_index]
+			tape[next_index] = transition[0]
+			current_index = next_index
+			current_state = tape[current_index]
+		if details: print(''.join(tape), "->", end='')		
 		print("Aceptada")
 		return True
 
-	def processStringWithDetails(self, string):
-		transitions = self.getTransitionSet()
-		tape = []
-		currentState = self.initial
-		tape.append(currentState)
-		currentIndex = 0
-		for char in string:
-			tape.append(char)
-		tape.append('!')
-		print("Cadena ingresada: ", string)
-		while(tape[currentIndex] != None and currentState not in self.accepting):	
-			print(''.join(tape), "->", end='')
-			Pair = (tape[currentIndex], tape[currentIndex+1])
-			if transitions.get(Pair) == None:
-				#M se detiene en un estado que no es de aceptacion, 
-				#lambda(q, s) no está definida
-				print("La transicion Lambda", Pair," no existe")
-				return False
-			transition = transitions.get(Pair)
-			nextIndex = currentIndex+self.displace(transition)
-			tape[currentIndex+1]= transition[1]
-			tape[currentIndex] = tape[nextIndex]
-			tape[nextIndex] = transition[0]
-			currentIndex = nextIndex
-			currentState = tape[currentIndex]
-		## Ultimo estado, debe llevarse a otras funciones.
-		print(''.join(tape), "->", end='')	
-		print("Aceptada")
-		return True
+	def process_string_with_details(self, string):
+		return self.process_string(string, details=True)
 
-	def processFunction(self, string):
+	def process_function(self, string):
 		#Retorna ultima configuración instantanea
-		transitions = self.getTransitionSet()
+		transitions = self.get_transition_set()
 		tape = []
-		currentState = self.initial
-		tape.append(currentState)
-		currentIndex = 0
+		current_state = self.initial
+		tape.append(current_state)
+		current_index = 0
 		for char in string:
 			tape.append(char)
 		tape.append('!')
 		print("Cadena ingresada: ", string)
-		while(tape[currentIndex] != None and currentState not in self.accepting):	
-			Pair = (tape[currentIndex], tape[currentIndex+1])
-			if transitions.get(Pair) == None:
+		while(tape[current_index] != None and current_state not in self.accepting):	
+			pair = (tape[current_index], tape[current_index+1])
+			if transitions.get(pair) == None:
 				#M se detiene en un estado que no es de aceptacion, 
 				#lambda(q, s) no está definida
-				print("La transicion Lambda", Pair," no existe")
-				return lastString
+				print("La transicion Lambda", pair," no existe")
+				return last_string
 
-			transition = transitions.get(Pair)
-			nextIndex = currentIndex+self.displace(transition)
-			tape[currentIndex+1]= transition[1]
-			tape[currentIndex] = tape[nextIndex]
-			tape[nextIndex] = transition[0]
-			currentIndex = nextIndex
-			currentState = tape[currentIndex]
-			lastString = ''.join(tape)
+			transition = transitions.get(pair)
+			next_index = current_index+self.displace(transition)
+			tape[current_index+1]= transition[1]
+			tape[current_index] = tape[next_index]
+			tape[next_index] = transition[0]
+			current_index = next_index
+			current_state = tape[current_index]
+			last_string = ''.join(tape)
 
-		return lastString
-
-
-
+		return last_string
 
 if(len(sys.argv)<2):
 	print("Error: Ingresa un archivo dfa de la siguiente forma")
 	print("python TM.py archivo.tm")
 else:
 
-	mt = MT(file=sys.argv[1])
+
+	mt1 = MT.from_file_name(file=sys.argv[1])
+
+	mt2 = MT({'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'}, 'q0', {'q6'}, {'a', 'b'}, {'a', 'b'},  {"q0:a?q1:!:>","q0:b?q3:!:>","q0:!?q6:!:-","q1:a?q1:a:>","q1:b?q1:b:>","q1:!?q2:!:<",
+"q2:a?q5:!:<","q3:a?q3:a:>","q3:b?q3:b:>","q3:!?q4:!:<","q4:b?q5:!:<","q5:a?q5:a:<","q5:b?q5:b:<","q5:!?q0:!:>"})
 
 	while(True):
 		cadena = input("Ingresa una cadena\n")
-		print(mt.processStringWithDetails(cadena))
+		print(mt1.process_string_with_details(cadena))
 
 
 
