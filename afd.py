@@ -3,86 +3,78 @@ import sys
 
 class AFD:
 
-	def __init__(self, file):
-		self.alphabet=set({})
-		self.states=set({})
-		self.initial=""
-		self.accepting=set({})
-		self.transitions=set({})
+	def __init__(self, alphabet=set({}), states=set({}), initial="", accepting=set({}), transitions=set({}), file=None):
+		self.alphabet = alphabet
+		self.states = states
+		self.initial = initial
+		self.accepting = accepting
+		self.transitions = transitions
 
-		lines = open(file).readlines()
-		
-		currentReading = ""
-		for line in lines:
-			line = line.rstrip("\n")
-			if(line.startswith("#")):
-				currentReading = line
-			if (line!="" and line != currentReading):
-				afdAtr = currentReading.lstrip("#")
-				if(currentReading!="#initial"):
-					getattr(self, afdAtr).add(line)
-				else:
-					self.initial = line
+		if(file!= None):
 
-	def getTransitionSet(self):
-		transitionList = {}
+			lines = open(file).readlines()
+			
+			currentReading = ""
+			for line in lines:
+				line = line.rstrip("\n")
+				if(line.startswith("#")):
+					currentReading = line
+				if (line!="" and line != currentReading):
+					afdAtr = currentReading.lstrip("#")
+					if(currentReading!="#initial"):
+						getattr(self, afdAtr).add(line)
+					else:
+						self.initial = line
+
+	def from_file_name(self, file):
+		return cls(file=file)
+
+	def get_transition_set(self):
+		transition_list = {}
 		for line in self.transitions:
 			#Separa las transiciones en
 			#estado inicial, simbolo, estado final
 			#Posiblemente deba ser modelado como una clase propia.
 			chars = re.split(':|>', line)
-			transitionList[(chars[0], chars[1])] = (chars[2])
+			transition_list[(chars[0], chars[1])] = (chars[2])
 
-		return transitionList
+		return transition_list
 
-	def processString(self, string):
-		transitions = self.getTransitionSet()
-		currentState = self.initial
+	def process_string(self, string, details=False):
+		transitions = self.get_transition_set()
+		current_state = self.initial
+		current_string = string
 		for char in string:
 			if(char=="!"):
-				currentState = currentState
+				current_state = current_state
 			elif(char not in self.alphabet):
 				print("No existe el simbolo en el alfabeto de la cinta")
 				return False
 			else:
-				currentState = transitions[(currentState, char)]
-		if(currentState in self.accepting):
-			return True
-		else:
-			return False
-
-	def processStringWithDetails(self, string):
-		transitions = self.getTransitionSet()
-		currentState = self.initial
-		currentString = string
-		for char in string:
-			if(char=="!"):
-				currentState = currentState
-			elif(char not in self.alphabet):
-				print("No existe el simbolo en el alfabeto de la cinta")
-				return False
-			else:
-				print("({},{})->".format(currentState, currentString), end = '')
-				currentState = transitions[(currentState, char)]
-				currentString = currentString[1:]
+				if details: print("({},{})->".format(current_state, current_string), end = '')
+				current_state = transitions[(current_state, char)]
+				current_string = current_string[1:]
 			
-		print("({},{})->".format(currentState, '$'), end = '')
-		if(currentState in self.accepting):
-			print("Accepted")
+		if details: print("({},{})->".format(current_state, '$'), end = '')
+
+		if(current_state in self.accepting):
+			if details: print("Accepted")
 			return True
 		else:
-			print("Rejected")
+			if details: print("Rejected")
 			return False
 
+	def process_string_with_details(self, string):
+		self.process_string(string, details=True)
 
-	def processListStrings(self, stringList, fileName, printScreen):
+	def process_list_strings(self, string_list, filename, printScreen):
 
-		with open("{}.txt".format(fileName), "w") as writer:
+		with open("{}.txt".format(filename), "w") as writer:
 			sys.stdout = writer
-			for string in stringList:
-				self.processStringWithDetails(string)
+			for string in string_list:
+				self.process_string_with_details(string)
 		if(printScreen==True):
-			with open("{}.txt".format(fileName), "r") as reader:
+			with open("{}.txt".format(filename), "r") as reader:
 				sys.stdout = sys.__stdout__
 				for line in reader.readlines():
 					print(line)
@@ -92,14 +84,9 @@ if(len(sys.argv)<2):
 	print("Error: Ingresa un archivo dfa de la siguiente forma")
 	print("python dfa.py archivo.dfa")
 else:
-
 	afd = AFD(file=sys.argv[1])
 	
 	while(True):
 		cadena = input("Ingresa una cadena\n")
-		print(afd.processStringWithDetails(cadena))
-	''' Test processListStrings
-	listaCadenas = ["bbbbb", "babab", "bbbbb", "aaaaa"]
-	afd.processListStrings(listaCadenas, "archivo1", True)
-	'''
+		afd.process_string_with_details(cadena)
 
