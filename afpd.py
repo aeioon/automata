@@ -105,7 +105,7 @@ class AFPD:
 	def process_string_with_details(self, string):
 		self.process_string(string, details=True)
 
-	def findCartesianProduct(afd):
+	def find_cartesian_product_afd(afd):
 		return True
 		
 
