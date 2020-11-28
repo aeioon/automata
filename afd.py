@@ -1,3 +1,6 @@
+'''
+
+'''
 import re
 import sys
 
@@ -16,17 +19,26 @@ class AFD:
 
 			lines = open(file).readlines()
 			
-			currentReading = ""
+			currently_reading = ""
 			for line in lines:
 				line = line.rstrip("\n")
+
 				if(line.startswith("#")):
-					currentReading = line
-				if (line!="" and line != currentReading):
-					afdAtr = currentReading.lstrip("#")
-					if(currentReading!="#initial"):
-						getattr(self, afdAtr).add(line)
-					else:
+					currently_reading = line
+
+				if (line!="" and line != currently_reading):
+					automata_attribute = currently_reading.lstrip("#")
+
+					if(currently_reading == "#alphabet"):
+						if("-" in line):
+							for char in range(ord(line[0]), ord(line[2])+1):
+								getattr(self, automata_attribute).add(chr(char))
+
+					if(currently_reading == "#initial"):
 						self.initial = line
+					else:
+						getattr(self, automata_attribute).add(line)
+				
 
 	#Constructor de archivo
 	@classmethod
@@ -91,8 +103,7 @@ if __name__ == "__main__":
 		print("Error: Ingresa un archivo dfa de la siguiente forma")
 		print("python dfa.py archivo.dfa")
 	else:
-		afd = AFD()
-			
+		afd = AFD(file=sys.argv[1])
 		while(True):
 			cadena = input("Ingresa una cadena\n")
 			afd.process_string_with_details(cadena)

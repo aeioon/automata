@@ -18,17 +18,26 @@ class AFPD:
 
 			lines = open(file).readlines()
 			
-			currentReading = ""
+			currently_reading = ""
 			for line in lines:
+
 				line = line.rstrip("\n")
+
 				if(line.startswith("#")):
-					currentReading = line
-				if (line!="" and line != currentReading):
-					afpdAtr = currentReading.lstrip("#")
-					if(currentReading!="#initial"):
-						getattr(self, afpdAtr).add(line)
-					else:
+					currently_reading = line
+
+				if (line!="" and line != currently_reading):
+					automata_attribute = currently_reading.lstrip("#")
+
+					if(currently_reading in ["#tapeAlphabet", "#stackAlphabet"]):
+						if("-" in line):
+							for char in range(ord(line[0]), ord(line[2])+1):
+								getattr(self, automata_attribute).add(chr(char))
+
+					elif(currently_reading == "#initial"):
 						self.initial = line
+					else:
+						getattr(self, automata_attribute).add(line)
 
 	@classmethod
 	def from_file_name(cls, file):
@@ -52,6 +61,9 @@ class AFPD:
 		transition_list = self.get_transition_set()
 		while(current_string[0] != None):
 			char = current_string[0]
+			if(char not in self.tapeAlphabet and char not in ["!", "$"]):
+				print("La cadena contiene caracteres que no estan en el alfabeto")
+				return False
 			pair = (current_state, char)
 			transition = transition_list.get(pair)
 
@@ -164,7 +176,6 @@ if __name__ == "__main__":
 		print("python dfa.py archivo.afpd opcionalmente archivo dfa")
 	else:
 		afpd = AFPD.from_file_name(file=sys.argv[1])
-			
 		while(True):
 			cadena = input("Ingresa una cadena afpd\n")
 			print(afpd.process_string_with_details(cadena))
