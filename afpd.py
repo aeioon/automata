@@ -61,9 +61,6 @@ class AFPD:
 		transition_list = self.get_transition_set()
 		while(current_string[0] != None):
 			char = current_string[0]
-			if(char not in self.tapeAlphabet and char not in ["!", "$"]):
-				print("La cadena contiene caracteres que no estan en el alfabeto")
-				return False
 			pair = (current_state, char)
 			transition = transition_list.get(pair)
 
@@ -71,16 +68,18 @@ class AFPD:
 			#No imprime las descripciones instantaneas cuando la transicion no existe. Si la transicion existe pero comienza con lambda se quita el lambda
 			if transition != None:
 				if details: print("({}, {}, {})->".format(current_state, current_string.lstrip("$"), ''.join(self.stack)), end='')
-			#Si no existe la transicion entonces  la cambiamos. Si se da el caso en el que la longitud sea 1 con $ pero ni el stack este vacio ni el estado sea de acpetacion se devuelve falso
+			
+			#Si se da el caso en el que la longitud sea 1 con $ pero ni el stack este vacio ni el estado sea de acpetacion se devuelve falso
 			if(current_string[0] == "$" and len(current_string)==1):
 				if(len(self.stack) == 0 and current_state in self.accepting):
-					if details: print("({}, {})->".format(current_state, current_string), end='')
+					if details: print("({}, {})->".format(current_state, current_string), ''.join(self.stack), end='')
 					self.stack = []
 					return True
 				elif(len(self.stack) != 0 or current_state not in self.accepting):
 					self.stack = []
 					return False
-				
+			
+			#Si la transicion es lambda, es posible que no este definida una transicion, en tal caso se elimina $ y sigue
 			if transition == None:
 				current_string = current_string[1:]
 			else:
@@ -89,15 +88,11 @@ class AFPD:
 				#Se añade b sin importar el tope
 				if(transition[0]=='$' and transition[2]!='$'):
 					self.stack.append(transition[2])
-					current_state = transition[1]
-					current_string = current_string[1:]
 				#Caso 2: Delta(q0, a, A) = (q1, B)
 				#Se reemplaza A por B, el stack debe no estar vacio
 				elif(len(self.stack) != 0 and transition[0]==self.stack[-1] and transition[2]!='$'):
 					self.stack.pop()
 					self.stack.append(transition[2])
-					current_state = transition[1]
-					current_string = current_string[1:]	
 				#Caso 3: Delta(q, a , A) = (q', lambda)
 				#Se borra a del tope
 				elif(transition[2]=='$'):
@@ -106,17 +101,17 @@ class AFPD:
 					else:
 						self.stack = []
 						return False # no hay tope
-					current_state = transition[1]
-					current_string = current_string[1:]
 				#Caso 4: No se altera la pila
-				elif(transition[0] == transition[2] == '$'):
-					current_state = transition[1]
-					current_string = current_string[1:]
-				#Caso 5: Transicion lambda como en anb2n
+
+				current_state = transition[1]
+				current_string = current_string[1:]
 				current_string = '$' + current_string  
+
 		self.stack = []
 		return False
 	
+	def modify_stack(self, stack, operation, parameter):
+		pass
 
 
 	def process_string_with_details(self, string):
@@ -161,13 +156,13 @@ class AFPD:
 
 	def __str__(self):
 		attributes = ["states", "initial", "accepting", "tapeAlphabet", "stackAlphabet", "transitions"]
-		printedString = ""
+		to_string = ""
 		for attribute in attributes:
-			printedString = printedString + "\n#" + attribute
+			to_string = to_string + "\n#" + attribute
 			for item in getattr(self, attribute):
-				printedString = printedString + "\n" + item
+				to_string = to_string + "\n" + item
 
-		return printedString
+		return to_string
 
 		
 if __name__ == "__main__":	
