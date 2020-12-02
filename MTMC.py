@@ -86,7 +86,8 @@ class MTMC():
 
 			temps = copy.deepcopy(tapes)
 			for i in range(0, len(temps)):
-				temps[i].insert(pointers[0], "*")
+				temps[i].insert(pointers[i], "*")
+
 			if details: print("({}, {}, {})".format(current_state, ''.join(temps[0]).rstrip("!"), ''.join(temps[1]).rstrip("!")), "->", end='')
 			
 			pair = (current_state, tapes[0][pointers[0]], tapes[1][pointers[1]])
@@ -108,6 +109,7 @@ class MTMC():
 		if details: print("({}, {}, {})".format(current_state, ''.join(temps[0]).rstrip("!"), ''.join(temps[1]).rstrip("!")), "->", end='')
 		
 		return True
+
 	def process_string_with_details(self, string):
 
 		return self.process_string(string, details=True)

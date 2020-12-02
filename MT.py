@@ -34,7 +34,7 @@ class MT():
 	def get_transition_set(self):
 		transition_list = {}
 		for line in self.transitions:
-			chars = re.split(':|\\?|;', line)
+			chars = re.split(':|\\?', line)
 			transition_list[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
 		return transition_list
 
