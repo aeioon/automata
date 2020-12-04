@@ -80,17 +80,17 @@ class MTMC():
 		
 		while(len(tapes[0]) != None and current_state not in self.accepting):
 
-			for tape in tapes:
-				if(tape[-1]!="!"):
-					tape.append("!")
 
 			temps = copy.deepcopy(tapes)
 			for i in range(0, len(temps)):
 				temps[i].insert(pointers[i], "*")
 
-			if details: print("({}, {}, {})".format(current_state, ''.join(temps[0]).rstrip("!"), ''.join(temps[1]).rstrip("!")), "->", end='')
-			
-			pair = (current_state, tapes[0][pointers[0]], tapes[1][pointers[1]])
+			if details: print("({}, {}, {})".format(current_state, ''.join(temps[0]), ''.join(temps[1])), "->", end='')
+			for tape in tapes:
+				if(tape[-1]!="!"):
+					tape.append("!")
+			#pair = (current_state, tapes[0][pointers[0]], tapes[1][pointers[1]]) solo sirve para dos cintas.
+			pair = tuple([current_state]) + tuple([tapes[tape][pointers[tape]]for tape in range(0, len(tapes))])
 			transition = transitions.get(pair)
 			if transitions.get(pair) == None:
 				#M se detiene en un estado que no es de aceptacion, 
