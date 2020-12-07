@@ -1,0 +1,5 @@
+(q0,bbabababbb)->(q0,babababbb)->(q0,abababbb)->(q1,bababbb)->(q0,ababbb)->(q1,babbb)->(q0,abbb)->(q1,bbb)->(q0,bb)->(q0,b)->(q0,$)->Accepted
+(q0,bbbbbbbbbb)->(q0,bbbbbbbbb)->(q0,bbbbbbbb)->(q0,bbbbbbb)->(q0,bbbbbb)->(q0,bbbbb)->(q0,bbbb)->(q0,bbb)->(q0,bb)->(q0,b)->(q0,$)->Accepted
+(q0,bbbbbabbbbbbababbbb)->(q0,bbbbabbbbbbababbbb)->(q0,bbbabbbbbbababbbb)->(q0,bbabbbbbbababbbb)->(q0,babbbbbbababbbb)->(q0,abbbbbbababbbb)->(q1,bbbbbbababbbb)->(q0,bbbbbababbbb)->(q0,bbbbababbbb)->(q0,bbbababbbb)->(q0,bbababbbb)->(q0,bababbbb)->(q0,ababbbb)->(q1,babbbb)->(q0,abbbb)->(q1,bbbb)->(q0,bbb)->(q0,bb)->(q0,b)->(q0,$)->Accepted
+(q0,ababba)->(q1,babba)->(q0,abba)->(q1,bba)->(q0,ba)->(q0,a)->(q1,$)->Rejected
+(q0,aaaaaaaa)->(q1,aaaaaaa)->(q2,aaaaaa)->(q2,aaaaa)->(q2,aaaa)->(q2,aaa)->(q2,aa)->(q2,a)->(q2,$)->Rejected

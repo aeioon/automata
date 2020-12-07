@@ -1,13 +1,10 @@
-'''
-
-'''
 import re
 import sys
 
 
 class AFD:
 
-	#Constructor
+	#Constructor sin archivos, pero tambien es utilizado por from_file_name para construir un AFD desde un archivo
 	def __init__(self, alphabet=set({}), states=set({}), initial="", accepting=set({}), transitions=set({}), file=None):
 		self.alphabet = alphabet
 		self.states = states
@@ -49,14 +46,12 @@ class AFD:
 	def get_transition_set(self):
 		transition_list = {}
 		for line in self.transitions:
-			#Separa las transiciones en
-			#estado inicial, simbolo, estado final
-			#Posiblemente deba ser modelado como una clase propia.
 			chars = re.split(':|>', line)
 			transition_list[(chars[0], chars[1])] = (chars[2])
 
 		return transition_list
 
+	#Procesa la cadena sin detalles
 	def process_string(self, string, details=False):
 		transitions = self.get_transition_set()
 		current_state = self.initial
@@ -81,10 +76,12 @@ class AFD:
 			if details: print("Rejected")
 			return False
 
+	#Procesa la cadena con detalles
 	def process_string_with_details(self, string):
 		return self.process_string(string, details=True)
 
-	def process_list_strings(self, string_list, filename, printScreen=False):
+	#Procesa una lista de cadenas
+	def process_string_list(self, string_list, filename, printScreen=False):
 
 		with open("{}.txt".format(filename), "w") as writer:
 			sys.stdout = writer
@@ -96,6 +93,16 @@ class AFD:
 				for line in reader.readlines():
 					print(line)
 
+	#Devuelve los atributos del AFD.
+	def __str__(self):
+		attributes = ["alphabet", "states", "initial", "accepting", "transitions"]
+		to_string = ""
+		for attribute in attributes:
+			to_string = to_string + "\n#" + attribute
+			for item in getattr(self, attribute):
+				to_string = to_string + "\n" + item
+
+		return to_string
 
 
 if __name__ == "__main__":	
