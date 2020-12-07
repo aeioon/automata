@@ -5,6 +5,7 @@ from afd import AFD
 
 class AFPD:
 
+	#Constructor
 	def __init__(self, states=set({}), initial="", accepting=set({}), tapeAlphabet=set({}), stackAlphabet=set({}), transitions=set({}), file=None):
 		self.states=states
 		self.initial= initial
@@ -46,8 +47,6 @@ class AFPD:
 	def get_transition_set(self):
 		transition_list = {}
 		for line in self.transitions:
-			#Separa las transiciones en
-			#estado origen, simbolo, simbolo reemplazado, estado final, simbolo que reemplaza
 			chars = re.split(':|>', line)
 			transition_list[(chars[0], chars[1])] = (chars[2], chars[3], chars[4])
 
@@ -74,9 +73,12 @@ class AFPD:
 				if(len(self.stack) == 0 and current_state in self.accepting):
 					if details: print("({}, {})->".format(current_state, current_string), ''.join(self.stack), end='')
 					self.stack = []
+					if details: print("Accepted")
 					return True
 				elif(len(self.stack) != 0 or current_state not in self.accepting):
 					self.stack = []
+					print()
+					if details: print("Rejected")
 					return False
 			
 			#Si la transicion es lambda, es posible que no este definida una transicion, en tal caso se elimina $ y sigue
@@ -100,6 +102,7 @@ class AFPD:
 						self.stack.pop()
 					else:
 						self.stack = []
+						if details: print("Rejected")
 						return False # no hay tope
 				#Caso 4: No se altera la pila
 
@@ -110,10 +113,6 @@ class AFPD:
 		self.stack = []
 		return False
 	
-	def modify_stack(self, stack, operation, parameter):
-		pass
-
-
 	def process_string_with_details(self, string):
 		return self.process_string(string, True)
 
@@ -130,19 +129,14 @@ class AFPD:
 		else:
 			print("Mismo alfabeto")
 
-		#Construir nuevo delta, por partes. 
-		#Si delta(p, a, A) = (p', B) y delta(q, a) = q' => d((p, q), a, A) = (p', q', B)
-
 		for pair in afpd_transitions :
 			print(pair)
-		print("AFD")
 		for pair in afd_transitions :
 			print(pair)
 
-		# Falta terminar metodo
 		return True
 
-	def process_list_strings(self, string_list, filename, printScreen=False):
+	def process_string_list(self, string_list, filename, printScreen=False):
 
 		with open("{}.txt".format(filename), "w") as writer:
 			sys.stdout = writer
@@ -153,6 +147,7 @@ class AFPD:
 				sys.stdout = sys.__stdout__
 				for line in reader.readlines():
 					print(line)
+
 
 	def __str__(self):
 		attributes = ["states", "initial", "accepting", "tapeAlphabet", "stackAlphabet", "transitions"]
@@ -168,7 +163,7 @@ class AFPD:
 if __name__ == "__main__":	
 	if(len(sys.argv)<2):
 		print("Error: Ingresa un archivo dfa de la siguiente forma")
-		print("python dfa.py archivo.afpd opcionalmente archivo dfa")
+		print("python dfa.py archivo.afpd archivo.pda")
 	else:
 		afpd = AFPD.from_file_name(file=sys.argv[1])
 		while(True):
