@@ -9,7 +9,7 @@ sys.path.insert(1, '../')
 
 from mt import MT
 
-#Construimos un MT sin necesidad de archivo, este es el mismo mt encontrado en turing1.mt, el cual describe los palindromos pares formados por aes y bes
+#Construimos un MT sin necesidad de archivo, este es el mismo mt encontrado en turing1.mt, el cual describe el lenguaje los palindromos pares formados por aes y bes
 
 mt = MT({'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'}, "q0", {'q6'}, {'a', 'b'}, {"a", "b"}, {"q0:a?q1:!:>","q0:b?q3:!:>","q0:!?q6:!:-","q1:a?q1:a:>","q1:b?q1:b:>","q1:!?q2:!:<","q2:a?q5:!:<","q3:a?q3:a:>","q3:b?q3:b:>","q3:!?q4:!:<","q4:b?q5:!:<","q5:a?q5:a:<","q5:b?q5:b:<","q5:!?q0:!:>"})
 

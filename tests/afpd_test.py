@@ -9,7 +9,7 @@ sys.path.insert(1, '../')
 
 from afpd import AFPD
 
-#Construimos un AFPD sin necesidad de archivo, este es el mismo afpd encontrado en adfFile.dfa, el cual describe  a^n b^n, se puede ejecutar desde archivo
+#Construimos un AFPD sin necesidad de archivo, este es el mismo afpd encontrado en adfFile.dfa, el cual describe el a^n b^n, se puede ejecutar desde archivo
 #con python afpd.py afpdFile.dpda
 
 afpd = AFPD({'q0', 'q1', 'q2'}, "q0", {'q0','q1'}, {'a', 'b'}, {"A"},{"q0:a:$>q0:A","q0:b:A>q1:$","q1:b:A>q1:$","q1:a:$>q2:$","q2:a:$>q2:$","q2:b:$>q2:$"})
