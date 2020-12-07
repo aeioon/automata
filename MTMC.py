@@ -80,7 +80,6 @@ class MTMC():
 		
 		while(len(tapes[0]) != None and current_state not in self.accepting):
 
-
 			temps = copy.deepcopy(tapes)
 			for i in range(0, len(temps)):
 				temps[i].insert(pointers[i], "*")
@@ -89,13 +88,11 @@ class MTMC():
 			for tape in tapes:
 				if(tape[-1]!="!"):
 					tape.append("!")
-			#pair = (current_state, tapes[0][pointers[0]], tapes[1][pointers[1]]) solo sirve para dos cintas.
 			pair = tuple([current_state]) + tuple([tapes[tape][pointers[tape]]for tape in range(0, len(tapes))])
 			transition = transitions.get(pair)
 			if transitions.get(pair) == None:
-				#M se detiene en un estado que no es de aceptacion, 
-				#lambda(q, s) no está definida
-				print("La transicion", pair," no existe")
+
+				print("Rejected")
 				return False
 
 			for tape in range(0, len(tapes)):
@@ -107,23 +104,45 @@ class MTMC():
 				current_state = transition[0]
 
 		if details: print("({}, {}, {})".format(current_state, ''.join(temps[0]).rstrip("!"), ''.join(temps[1]).rstrip("!")), "->", end='')
-		
+		print("Accepted")
 		return True
 
 	def process_string_with_details(self, string):
 
 		return self.process_string(string, details=True)
 
+	def process_string_list(self, string_list, filename, printScreen=False):
+
+		with open("{}.txt".format(filename), "w") as writer:
+			sys.stdout = writer
+			for string in string_list:
+				self.process_string_with_details(string)
+		if(printScreen==True):
+			with open("{}.txt".format(filename), "r") as reader:
+				sys.stdout = sys.__stdout__
+				for line in reader.readlines():
+					print(line)
+
+	def __str__(self):
+		attributes = ["states", "initial", "accepting", "inputAlphabet", "tapeAlphabet", "transitions"]
+		to_string = ""
+		for attribute in attributes:
+			to_string = to_string + "\n#" + attribute
+			for item in getattr(self, attribute):
+				to_string = to_string + "\n" + item
+
+		return to_string
+
 
 if(len(sys.argv)<2):
-	print("Error: Ingresa un archivo dfa de la siguiente forma")
-	print("python TM.py archivo.tm")
+	print("Error: Ingresa un archivo mttm de la siguiente forma")
+	print("python mtmc.py archivo.mttm")
 else:
 
-	mt1 = MTMC.from_file_name(file=sys.argv[1])
+	mtmc = MTMC.from_file_name(file=sys.argv[1])
 	while(True):
 		cadena = input("Ingresa una cadena\n")
-		print(mt1.process_string_with_details(cadena))
+		print(mtmc.process_string_with_details(cadena))
 
 
 
