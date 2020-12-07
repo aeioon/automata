@@ -15,7 +15,6 @@ afd = AFD({'a', 'b'}, {'q0', 'q1', 'q2'}, 'q0', {'q0'}, {'q0:a>q1','q0:b>q0','q1
 
 #Deberia aceptar los primeros 3, rechazar los ultimos 2.
 
-
 test1 = "bbabababbb"
 test2 = "bbbbbbbbbb"
 test3 = "bbbbbabbbbbbababbbb"

@@ -1,0 +1,12 @@
+Cadena ingresada:  baab
+q0baab! ->!q3aab! ->!aq3ab! ->!aaq3b! ->!aabq3! ->!aaq4b! ->!aq5a!! ->!q5aa!! ->q5!aa!! ->!q0aa!! ->!!q1a!! ->!!aq1!! ->!!q2a!! ->!q5!!!! ->!!q0!!! ->!!q6!!! ->Accepted
+Cadena ingresada:  aaaabbaaaa
+q0aaaabbaaaa! ->!q1aaabbaaaa! ->!aq1aabbaaaa! ->!aaq1abbaaaa! ->!aaaq1bbaaaa! ->!aaabq1baaaa! ->!aaabbq1aaaa! ->!aaabbaq1aaa! ->!aaabbaaq1aa! ->!aaabbaaaq1a! ->!aaabbaaaaq1! ->!aaabbaaaq2a! ->!aaabbaaq5a!! ->!aaabbaq5aa!! ->!aaabbq5aaa!! ->!aaabq5baaa!! ->!aaaq5bbaaa!! ->!aaq5abbaaa!! ->!aq5aabbaaa!! ->!q5aaabbaaa!! ->q5!aaabbaaa!! ->!q0aaabbaaa!! ->!!q1aabbaaa!! ->!!aq1abbaaa!! ->!!aaq1bbaaa!! ->!!aabq1baaa!! ->!!aabbq1aaa!! ->!!aabbaq1aa!! ->!!aabbaaq1a!! ->!!aabbaaaq1!! ->!!aabbaaq2a!! ->!!aabbaq5a!!! ->!!aabbq5aa!!! ->!!aabq5baa!!! ->!!aaq5bbaa!!! ->!!aq5abbaa!!! ->!!q5aabbaa!!! ->!q5!aabbaa!!! ->!!q0aabbaa!!! ->!!!q1abbaa!!! ->!!!aq1bbaa!!! ->!!!abq1baa!!! ->!!!abbq1aa!!! ->!!!abbaq1a!!! ->!!!abbaaq1!!! ->!!!abbaq2a!!! ->!!!abbq5a!!!! ->!!!abq5ba!!!! ->!!!aq5bba!!!! ->!!!q5abba!!!! ->!!q5!abba!!!! ->!!!q0abba!!!! ->!!!!q1bba!!!! ->!!!!bq1ba!!!! ->!!!!bbq1a!!!! ->!!!!bbaq1!!!! ->!!!!bbq2a!!!! ->!!!!bq5b!!!!! ->!!!!q5bb!!!!! ->!!!q5!bb!!!!! ->!!!!q0bb!!!!! ->!!!!!q3b!!!!! ->!!!!!bq3!!!!! ->!!!!!q4b!!!!! ->!!!!q5!!!!!!! ->!!!!!q0!!!!!! ->!!!!!q6!!!!!! ->Accepted
+Cadena ingresada:  abba
+q0abba! ->!q1bba! ->!bq1ba! ->!bbq1a! ->!bbaq1! ->!bbq2a! ->!bq5b!! ->!q5bb!! ->q5!bb!! ->!q0bb!! ->!!q3b!! ->!!bq3!! ->!!q4b!! ->!q5!!!! ->!!q0!!! ->!!q6!!! ->Accepted
+Cadena ingresada:  baaab
+q0baaab! ->!q3aaab! ->!aq3aab! ->!aaq3ab! ->!aaaq3b! ->!aaabq3! ->!aaaq4b! ->!aaq5a!! ->!aq5aa!! ->!q5aaa!! ->q5!aaa!! ->!q0aaa!! ->!!q1aa!! ->!!aq1a!! ->!!aaq1!! ->!!aq2a!! ->!!q5a!!! ->!q5!a!!! ->!!q0a!!! ->!!!q1!!! ->!!q2!!!! ->Rejected
+Cadena ingresada:  bbabb
+q0bbabb! ->!q3babb! ->!bq3abb! ->!baq3bb! ->!babq3b! ->!babbq3! ->!babq4b! ->!baq5b!! ->!bq5ab!! ->!q5bab!! ->q5!bab!! ->!q0bab!! ->!!q3ab!! ->!!aq3b!! ->!!abq3!! ->!!aq4b!! ->!!q5a!!! ->!q5!a!!! ->!!q0a!!! ->!!!q1!!! ->!!q2!!!! ->Rejected
+Cadena ingresada:  bbaab
+q0bbaab! ->!q3baab! ->!bq3aab! ->!baq3ab! ->!baaq3b! ->!baabq3! ->!baaq4b! ->!baq5a!! ->!bq5aa!! ->!q5baa!! ->q5!baa!! ->!q0baa!! ->!!q3aa!! ->!!aq3a!! ->!!aaq3!! ->!!aq4a!! ->Rejected

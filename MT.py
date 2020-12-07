@@ -11,20 +11,30 @@ class MT():
 		self.tapeAlphabet=tapeAlphabet
 		self.transitions = transitions
 
-		if(file!=None):
+		if(file!= None):
+
 			lines = open(file).readlines()
 			
-			current_reading = ""
+			currently_reading = ""
 			for line in lines:
+
 				line = line.rstrip("\n")
+
 				if(line.startswith("#")):
-					current_reading = line
-				if (line!="" and line != current_reading):
-					tmAtr = current_reading.lstrip("#")
-					if(current_reading!="#initial"):
-						getattr(self, tmAtr).add(line)
-					else:
+					currently_reading = line
+
+				if (line!="" and line != currently_reading):
+					automata_attribute = currently_reading.lstrip("#")
+
+					if(currently_reading in ["#inputAlphabet", "#tapeAlphabet"]):
+						if("-" in line):
+							for char in range(ord(line[0]), ord(line[2])+1):
+								getattr(self, automata_attribute).add(chr(char))
+
+					elif(currently_reading == "#initial"):
 						self.initial = line
+					else:
+						getattr(self, automata_attribute).add(line)
 
 	@classmethod
 	def from_file_name(cls, file):
@@ -63,7 +73,7 @@ class MT():
 			if transitions.get(pair) == None:
 				#M se detiene en un estado que no es de aceptacion, 
 				#lambda(q, s) no está definida
-				print("La transicion Lambda", pair," no existe")
+				print("Rejected")
 				return False
 			transition = transitions.get(pair)
 			next_index = current_index+self.displace(transition)
@@ -72,8 +82,8 @@ class MT():
 			tape[next_index] = transition[0]
 			current_index = next_index
 			current_state = tape[current_index]
-		if details: print(''.join(tape), "->", end='')		
-		print("Aceptada")
+		if details: print(''.join(tape), "->", end='')	
+		print("Accepted")
 		return True
 
 	def process_string_with_details(self, string):
@@ -93,9 +103,7 @@ class MT():
 		while(tape[current_index] != None and current_state not in self.accepting):	
 			pair = (tape[current_index], tape[current_index+1])
 			if transitions.get(pair) == None:
-				#M se detiene en un estado que no es de aceptacion, 
-				#lambda(q, s) no está definida
-				print("La transicion Lambda", pair," no existe")
+				print("La transicion delta", pair," no existe")
 				return last_string
 
 			transition = transitions.get(pair)
@@ -108,6 +116,28 @@ class MT():
 			last_string = ''.join(tape)
 
 		return last_string
+
+	def process_string_list(self, string_list, filename, printScreen=False):
+
+		with open("{}.txt".format(filename), "w") as writer:
+			sys.stdout = writer
+			for string in string_list:
+				self.process_string_with_details(string)
+		if(printScreen==True):
+			with open("{}.txt".format(filename), "r") as reader:
+				sys.stdout = sys.__stdout__
+				for line in reader.readlines():
+					print(line)
+
+	def __str__(self):
+		attributes = ["states", "initial", "accepting", "inputAlphabet", "tapeAlphabet", "transitions"]
+		to_string = ""
+		for attribute in attributes:
+			to_string = to_string + "\n#" + attribute
+			for item in getattr(self, attribute):
+				to_string = to_string + "\n" + item
+
+		return to_string
 
 if(len(sys.argv)<2):
 	print("Error: Ingresa un archivo dfa de la siguiente forma")
@@ -123,6 +153,7 @@ else:
 	while(True):
 		cadena = input("Ingresa una cadena\n")
 		print(mt1.process_string_with_details(cadena))
+		print(mt1.process_function(cadena))
 
 
 
