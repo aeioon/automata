@@ -73,9 +73,12 @@ class AFPD:
 				if(len(self.stack) == 0 and current_state in self.accepting):
 					if details: print("({}, {})->".format(current_state, current_string), ''.join(self.stack), end='')
 					self.stack = []
+					if details: print("Accepted")
 					return True
 				elif(len(self.stack) != 0 or current_state not in self.accepting):
 					self.stack = []
+					print()
+					if details: print("Rejected")
 					return False
 			
 			#Si la transicion es lambda, es posible que no este definida una transicion, en tal caso se elimina $ y sigue
@@ -99,6 +102,7 @@ class AFPD:
 						self.stack.pop()
 					else:
 						self.stack = []
+						if details: print("Rejected")
 						return False # no hay tope
 				#Caso 4: No se altera la pila
 

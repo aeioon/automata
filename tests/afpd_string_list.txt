@@ -1,0 +1,13 @@
+Se procesa la cadena:  aaaabbbb
+(q0, aaaabbbb, )->(q0, aaabbbb, A)->(q0, aabbbb, AA)->(q0, abbbb, AAA)->(q0, bbbb, AAAA)->(q1, bbb, AAA)->(q1, bb, AA)->(q1, b, A)->(q1, $)-> Accepted
+Se procesa la cadena:  ab
+(q0, ab, )->(q0, b, A)->(q1, $)-> Accepted
+Se procesa la cadena:  
+(q0, $)-> Accepted
+Se procesa la cadena:  aaabb
+(q0, aaabb, )->(q0, aabb, A)->(q0, abb, AA)->(q0, bb, AAA)->(q1, b, AA)->
+Rejected
+Se procesa la cadena:  aabbb
+(q0, aabbb, )->(q0, abbb, A)->(q0, bbb, AA)->(q1, bb, A)->(q1, b, )->Rejected
+Se procesa la cadena:  aba
+(q0, aba, )->(q0, ba, A)->(q1, a, )->Rejected
