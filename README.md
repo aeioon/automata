@@ -1,15 +1,15 @@
 ﻿# automata 
 
-```
+![alt text](https://files.catbox.moe/m0ej8h.jpg)
+
 ##Funcionamiento
-
-```
 La forma de ejecutarlos es 
-
+```
 python afd/afpd/etc.py nombre_de_archivo.formato
+
 ```
 
-##Automatas en los archivos.
+###Automatas en los archivos.
 
 dfaFile.dfa : (ab U b)*
 afpdFile : a^{n} b^{n}
