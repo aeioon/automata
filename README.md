@@ -20,7 +20,7 @@ turing1.tm: palíndromos pares en sigma = {a, b}
 
 turing2.tm: cadenas con mismo numeros de aes y bes
 
-turing3.tm: Suma de numeros de la forma 11...11!111...1
+turing3.tm: Suma de números de la forma 11...11!111...1
 
 turing_multitape1.mttm: a^{n} b^{n} c^{n}
 
